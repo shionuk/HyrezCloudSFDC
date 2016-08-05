@@ -1,4 +1,8 @@
 /*
+Author: Shion Earl-Krogseth @shionuk
+Date:   Aug 5th 2016 
+Copyright: Its on Github dude use it to your hearts content!
+
 This function alleviates the issues of Service Console not making it easy for you to open cases from 
 a visualforce page easily. You need to understand how the toolkit works, be comfortable with JavaScript callbacks
 which many SFDC people are not. 
