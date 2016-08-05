@@ -1,0 +1,48 @@
+/*
+This function alleviates the issues of Service Console not making it easy for you to open cases from 
+a visualforce page easily. You need to understand how the toolkit works, be comfortable with JavaScript callbacks
+which many SFDC people are not. 
+
+Put this JS code in your Visualforce page then call it via an onClick event in your markup like this:
+
+onClick="openViewRecordAsPrimaryTab('{!c.CaseRec.Id}','{!c.CaseRec.CaseNumber}','{!c.CaseRec.Contact.Id}','{!c.CaseRec.Contact.Name}');return false;" 
+
+*/
+function openViewRecordAsPrimaryTab(CaseRecordId, CaseNumber, ContactId, CustomerName) {
+             
+                sforce.console.focusPrimaryTabByName(CustomerName, function callBack(result){                        
+                    if (result.success == true) {
+                         //add a new subtab
+                         console.log('An existing tab already exist for this customer.');
+                         sforce.console.getFocusedPrimaryTabId(function(result){
+                            if (result.success == true) {
+                                    //now add the sub tab
+                                    sforce.console.openSubtab(result.id,'/' + CaseRecordId,true,CaseNumber,null,function(result) {                        
+                                            //Report whether opening the new tab was successful
+                                        if (result.success == true) {
+                                            console.log('Sub tab opened');
+                                            sforce.console.focusSubtabById(result.id);
+                                        } else {
+                                            console.log('Sub tab cannot be opened');
+                                        }
+                                    },CaseNumber);
+                            } else {
+                                console.log('Could not get the primary tab Id');
+                            }
+                         });
+                         
+                    } else {
+                        console.log('Primary Tab does not exist with the name of : ' + CustomerName);
+                        sforce.console.openPrimaryTab(null, '/' + CaseRecordId, false, CaseNumber, function (result) {                        
+                                //Report whether opening the new tab was successful
+                            if (result.success == true) {
+                                console.log('Primary tab opened');
+                                sforce.console.focusPrimaryTabById(result.id);
+                            } else {
+                                console.log('Primary tab cannot be opened');
+                            }
+                        },CustomerName);                       
+                    }
+              });
+              
+        }
